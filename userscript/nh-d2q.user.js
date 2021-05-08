@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-d2q
 // @namespace    https://github.com/kou003/
-// @version      1.1
+// @version      1.2
 // @description  Translate directory search (i.e. /artist/foobar/) to query search (i.e. /search/?q=artist:"foobar"), to exclude hidden items
 // @author       kou003
 // @match        *://nhentai.net/tag/*
@@ -15,11 +15,12 @@
 // @run-at       document-start
 // ==/UserScript==
 
-(() => {
+{
   'use strict';
   const main = () => {
     const [_, t, v] = location.pathname.match(/\/(.*)\/(.*)\//);
-    const toQuery = Object.assign(document.createElement('a'), {
+    const toQuery = Object.assign(document.querySelector('#toQuery') || document.createElement('a'), {
+      id: 'toQuery',
       className: 'current',
       textContent: 'ToQuery',
       href: `/search/?q=${t}%3A"${v.replaceAll('-', '+')}"`
@@ -31,4 +32,4 @@
   } else {
     main();
   }
-})();
+}
