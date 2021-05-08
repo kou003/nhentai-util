@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         nh-d2q
 // @namespace    https://github.com/kou003/
-// @version      1.0
+// @version      1.1
 // @description  Translate directory search (i.e. /artist/foobar/) to query search (i.e. /search/?q=artist:"foobar"), to exclude hidden items
 // @author       kou003
-// @match        *://nhentai.net/rag/*
+// @match        *://nhentai.net/tag/*
 // @match        *://nhentai.net/artist/*
 // @match        *://nhentai.net/charactor/*
 // @match        *://nhentai.net/parody/*
@@ -31,4 +31,4 @@
   } else {
     main();
   }
-})()
+})();
