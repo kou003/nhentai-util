@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-rep
 // @namespace    https://github.com/kou003/
-// @version      1.3
+// @version      1.4
 // @description  nh-rep
 // @author       kou003
 // @match        *://nhentai.net/g/*/*
