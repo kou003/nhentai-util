@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name         nh-rep
+// @name         nh-rep2
 // @namespace    https://github.com/kou003/
-// @version      1.4
-// @description  nh-rep
+// @version      1.0
+// @description  nh-rep2
 // @author       kou003
 // @match        *://nhentai.net/g/*/*
-// @updateURL    https://github.com/kou003/nhentai-util/raw/master/userscript/nh-rep.user.js
-// @downloadURL  https://github.com/kou003/nhentai-util/raw/master/userscript/nh-rep.user.js
+// @updateURL    https://github.com/kou003/nhentai-util/raw/master/userscript/nh-rep2.user.js
+// @downloadURL  https://github.com/kou003/nhentai-util/raw/master/userscript/nh-rep2.user.js
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
@@ -36,13 +36,13 @@
         }
         </style>`);
         let t=document.querySelector("#image-container");
-        let repImg = new Image();
-        repImg.className='rep-image';
-        t.append(repImg);
+        let x={j: '.jpg', p: '.png', g: '.gif'};
+        let repImg=window._gallery.images.pages.map((v,i)=>Object.assign(new Image(), {width: v.w, height: v.h, src: url+(1+i)+x[v.t], className: 'rep-image'}));
+        t.append(repImg[0]);
         let f=e=>{
-          let img = t.querySelector('a img')
-          Object.assign(repImg, img);
-          repImg.src=img.src.replace(/.*?([^/]*$)/, (_,m)=>url+m);
+          let num=location.pathname.match(/(\d+)\D*$/)[1];
+          let old=t.querySelector('.repImg');
+          t.replaceChild(repImg[num-1], old);
         }
         f();
         let observer = new MutationObserver(f);
