@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name         nh-rep2
+// @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      1.23
-// @description  nh-rep2
+// @version      1.0
+// @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*
-// @updateURL    https://github.com/kou003/nhentai-util/raw/master/userscript/nh-rep2.user.js
-// @downloadURL  https://github.com/kou003/nhentai-util/raw/master/userscript/nh-rep2.user.js
+// @updateURL    https://github.com/kou003/nhentai-util/raw/master/userscript/nh-cache.user.js
+// @downloadURL  https://github.com/kou003/nhentai-util/raw/master/userscript/nh-cache.user.js
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
@@ -14,16 +14,23 @@
 {
   'use strict';
   const main = () => {
-    let url=`https://192.168.0.80:55649/${_gallery.id}/`;
-    fetch(url,{method:'HEAD'}).then(r=>{
-      if (r.ok) {
+    let url=`https://i.nhentai.net/galleries/${_gallery.media_id}/`;
+    let btn1=document.createElement('button');
+    btn1.textContent='Cache';
+    let btn2=document.createElement('button');
+    btn2.textContent='Reload';
+    btn1.className=btn2.className='btn btn-secondary';
+    let content=document.querySelector('#content')
+    content.append(btn1);
+    content.append(btn2);
+    btn1.addEventListener('click', e=>{
         document.head.insertAdjacentHTML('beforeend',`<style>
         .alert{
           display:none
         }
         #image-container{
           position: relative;
-          overflow-y: hidden !important;
+          overflow: hidden !important;
         }
         #image-container>a{
           position: relative;
@@ -43,11 +50,11 @@
         let x={j: '.jpg', p: '.png', g: '.gif'};
         let p=document.createElement('progress');
         p.max=window._gallery.num_pages;
-        document.querySelector('#content').append(p);
-        let repImg=window._gallery.images.pages.map((v,i)=>{
+        content.append(p);
+        window.repImg=window._gallery.images.pages.map((v,i)=>{
           let img=new Image();
           img.addEventListener('load', e=>p.value+=1);
-          let prop = {width: v.w, height: v.h, src: url+(1+i)+x[v.t], className: 'rep-image'}
+          let prop = {width: v.w, height: v.h, src: url+(1+i)+x[v.t], className: 'rep-image', onerror: e=>setTimeout((img)=>img.src+='?', 2*Math.random(),e.currentTarget)}
           return Object.assign(img, prop);
         });
         c.append(repImg[0]);
@@ -73,8 +80,10 @@
         f();
         let observer = new MutationObserver(f);
         observer.observe(t,{ attributeFilter: ['href'] });
-      }
-    })
+      });
+      btn2.addEventListener('click', e=>{
+        document.querySelectorAll('#image-container img').forEach(img=>img.src+='?');
+      });
   }
   if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', main);
