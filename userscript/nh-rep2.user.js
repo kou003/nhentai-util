@@ -56,11 +56,8 @@
           if (!newImg.complete & oriImg.complete) {
             t.style.zIndex=5;
           } else if (!newImg.complete & !oriImg.complete) {
-            newImg.onload=e=>{
-              newImg.style.zIndex=10**13-new Date;
-            }
             oriImg.onload=e=>{
-              t.style.zIndex=10**13-new Date;
+              if (!newImg.complete && !!newImg.parentElement) t.style.zIndex=5;
             }
           }
         }
