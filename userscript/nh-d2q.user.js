@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         nh-d2q
 // @namespace    https://github.com/kou003/
-// @version      1.4
+// @version      1.41
 // @description  Translate directory search (i.e. /artist/foobar/) to query search (i.e. /search/?q=artist:"foobar"), to exclude hidden items
 // @author       kou003
 // @match        *://nhentai.net/tag/*
 // @match        *://nhentai.net/artist/*
-// @match        *://nhentai.net/charactor/*
+// @match        *://nhentai.net/character/*
 // @match        *://nhentai.net/parody/*
 // @match        *://nhentai.net/group/*
 // @match        *://nhentai.net/language/*
