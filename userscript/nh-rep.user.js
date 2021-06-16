@@ -23,6 +23,7 @@
         }
         #image-container{
           position: relative;
+          overflow-y: hidden !important;
         }
         #image-container>a{
           position: relative;
