@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-rep2
 // @namespace    https://github.com/kou003/
-// @version      1.22
+// @version      1.23
 // @description  nh-rep2
 // @author       kou003
 // @match        *://nhentai.net/g/*/*
@@ -41,12 +41,21 @@
         let c=document.querySelector("#image-container");
         let t=c.querySelector("a");
         let x={j: '.jpg', p: '.png', g: '.gif'};
-        let repImg=window._gallery.images.pages.map((v,i)=>Object.assign(new Image(), {width: v.w, height: v.h, src: url+(1+i)+x[v.t], className: 'rep-image'}));
+        let p=document.createElement('progress');
+        p.max=window._gallery.num_pages;
+        document.querySelector('nav').append(p);
+        let repImg=window._gallery.images.pages.map((v,i)=>{
+          let img=new Image();
+          img.addEventListener('load', e=>p.value+=1);
+          let prop = {width: v.w, height: v.h, src: url+(1+i)+x[v.t], className: 'rep-image'}
+          return Object.assign(img, prop);
+        });
         c.append(repImg[0]);
         let f=e=>{
           let num=location.pathname.match(/(\d+)\D*$/)[1];
           let oldImg=c.querySelector('.rep-image');
           let newImg=repImg[num-1];
+          console.log([num, newImg, oldImg]);
           c.replaceChild(newImg, oldImg);
           let oriImg = t.querySelector('img');
           newImg.style='';
