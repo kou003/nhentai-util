@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-rep2
 // @namespace    https://github.com/kou003/
-// @version      1.0
+// @version      1.1
 // @description  nh-rep2
 // @author       kou003
 // @match        *://nhentai.net/g/*/*
@@ -30,23 +30,30 @@
           z-index: 10;
         }
         .rep-image{
-          position: relative;
-          top: -100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          margin: auto;
           z-index: 0;
         }
         </style>`);
-        let t=document.querySelector("#image-container");
+        let c=document.querySelector("#image-container");
+        let t=c.querySelector("a");
         let x={j: '.jpg', p: '.png', g: '.gif'};
         let repImg=window._gallery.images.pages.map((v,i)=>Object.assign(new Image(), {width: v.w, height: v.h, src: url+(1+i)+x[v.t], className: 'rep-image'}));
-        t.append(repImg[0]);
+        c.append(repImg[0]);
         let f=e=>{
           let num=location.pathname.match(/(\d+)\D*$/)[1];
-          let old=t.querySelector('.repImg');
-          t.replaceChild(repImg[num-1], old);
+          let old=c.querySelector('.rep-image');
+          console.log(num);
+          console.log(repImg[num-1]);
+          console.log(old);
+          c.replaceChild(repImg[num-1], old);
         }
         f();
         let observer = new MutationObserver(f);
-        observer.observe(t,{ childList: true, subtree: true });
+        observer.observe(t,{ attributeFilter: ['href'] });
       }
     })
   }

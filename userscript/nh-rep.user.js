@@ -30,8 +30,11 @@
           z-index: 10;
         }
         .rep-image{
-          position: relative;
-          top: -100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          margin: auto;
           z-index: 0;
         }
         </style>`);
@@ -46,7 +49,7 @@
         }
         f();
         let observer = new MutationObserver(f);
-        observer.observe(t,{ childList: true, subtree: true });
+        observer.observe(t.querySelector('a'),{ attributeFilter: ['href'] });
       }
     })
   }
