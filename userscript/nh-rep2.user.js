@@ -27,7 +27,7 @@
         }
         #image-container>a{
           position: relative;
-          z-index: 10;
+          z-index: 1;
         }
         .rep-image{
           position: absolute;
@@ -35,7 +35,7 @@
           left: 0;
           right: 0;
           margin: auto;
-          z-index: 0;
+          z-index: 2;
         }
         </style>`);
         let c=document.querySelector("#image-container");
@@ -45,11 +45,24 @@
         c.append(repImg[0]);
         let f=e=>{
           let num=location.pathname.match(/(\d+)\D*$/)[1];
-          let old=c.querySelector('.rep-image');
-          console.log(num);
-          console.log(repImg[num-1]);
-          console.log(old);
-          c.replaceChild(repImg[num-1], old);
+          let oldImg=c.querySelector('.rep-image');
+          let newImg=repImg[num-1];
+          c.replaceChild(newImg, oldImg);
+          let oriImg = t.querySelector('img');
+          newImg.style='';
+          oriImg.style='';
+          newImg.onload=null;
+          oriImg.onload=null;
+          if (!newImg.complete & oriImg.complete) {
+            t.style.zIndex=5;
+          } else if (!newImg.complete & !oriImg.complete) {
+            newImg.onload=e=>{
+              newImg.style.zIndex=10**13-new Date;
+            }
+            oriImg.onload=e=>{
+              t.style.zIndex=10**13-new Date;
+            }
+          }
         }
         f();
         let observer = new MutationObserver(f);
