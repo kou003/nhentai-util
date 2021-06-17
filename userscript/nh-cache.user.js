@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      2.1
+// @version      2.2
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -22,7 +22,7 @@
     btn1.textContent = 'Cache';
     btn1.className = 'btn btn-secondary';
     let content = document.querySelector('nav');
-    content.append(btn1);
+    content.appendChild(btn1);
     btn1.onclick = e => {
       btn1.textContent='Reload';
       btn1.onclick=e=>document.querySelectorAll('#image-container img').forEach(img=>img.src+='?');
@@ -42,7 +42,7 @@
       };
       let p = document.createElement('progress');
       p.max = window._gallery.num_pages;
-      content.append(p);
+      content.appendChild(p);
       window.repImg = window._gallery.images.pages.map((v, i) => {
         let img = new Image();
         img.addEventListener('load', e => p.value += 1);
@@ -55,7 +55,7 @@
         }
         return Object.assign(img, prop);
       });
-      acr.append(repImg[get_num()-1]);
+      acr.appendChild(repImg[get_num()-1]);
       let f = e => {
         let num=get_num();
         let oriImg = acr.querySelector('img:first-of-type');
@@ -73,7 +73,7 @@
     localhost.placeholder='localhost';
     localhost.value=localStorage['localhost']||'';
     localhost.onchange=e=>localStorage['localhost']=localhost.value;
-    document.querySelector('#content').append(localhost);
+    document.querySelector('#content').appendChild(localhost);
   }
   if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', main);

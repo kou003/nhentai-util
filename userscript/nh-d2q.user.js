@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-d2q
 // @namespace    https://github.com/kou003/
-// @version      1.41
+// @version      1.42
 // @description  Translate directory search (i.e. /artist/foobar/) to query search (i.e. /search/?q=artist:"foobar"), to exclude hidden items
 // @author       kou003
 // @match        *://nhentai.net/tag/*
@@ -27,7 +27,7 @@
       textContent: 'ToQuery',
       href: `/search/?q=${t}%3A"${v.replaceAll('-', '+')}"`
     });
-    document.querySelector('#content>.sort>.sort-type:first-child').append(toQuery);
+    document.querySelector('#content>.sort>.sort-type:first-child').appendChild(toQuery);
   }
   if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', main);
