@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      2.0
+// @version      2.1
 // @description  nh-cache
 // @author       kou003
-// @match        *://nhentai.net/g/*/*
+// @match        *://nhentai.net/g/*/*/
 // @updateURL    https://github.com/kou003/nhentai-util/raw/master/userscript/nh-cache.user.js
 // @downloadURL  https://github.com/kou003/nhentai-util/raw/master/userscript/nh-cache.user.js
 // @grant        none
