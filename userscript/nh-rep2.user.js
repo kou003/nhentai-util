@@ -43,7 +43,7 @@
         let x={j: '.jpg', p: '.png', g: '.gif'};
         let p=document.createElement('progress');
         p.max=window._gallery.num_pages;
-        document.querySelector('#content').append(p);
+        document.querySelector('nav').append(p);
         let repImg=window._gallery.images.pages.map((v,i)=>{
           let img=new Image();
           img.addEventListener('load', e=>p.value+=1);
