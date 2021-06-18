@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      2.3
+// @version      2.31
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -20,9 +20,9 @@
     content.appendChild(btn1);
     btn1.textContent = 'Cache';
     btn1.className = 'btn btn-secondary';
-    window.url = `https://i.nhentai.net/galleries/${_gallery.media_id}/`;
-    let urlLocal = `https://${localStorage['localhost']}/${_gallery.id}/`
-    fetch(urlLocal).then(r=>r.ok&&(btn1.textContent='Local'));
+    let url = [`https://i.nhentai.net/galleries/${_gallery.media_id}/`,
+               `https://${localStorage['localhost']}/${_gallery.id}/`];
+    fetch(url[1]).then(r=>r.ok&&(btn1.textContent='Local')&&(url[0]=url[1]));
     btn1.onclick = e => {
       btn1.textContent='Reload';
       btn1.onclick=e=>document.querySelectorAll('#image-container img').forEach(img=>img.src+='?');
@@ -49,7 +49,7 @@
         let prop = {
           width: v.w,
           height: v.h,
-          src: url + (1 + i) + x[v.t],
+          src: url[0] + (1 + i) + x[v.t],
           className: 'rep-image',
           onerror: e => (e.target.src+='?')
         }
