@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      2.31
+// @version      3
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -14,61 +14,56 @@
 {
   'use strict';
   const main = async () => {
-    let get_num = ()=>location.pathname.match(/(\d+)\D*$/)[1];
-    let content = document.querySelector('nav');
-    let btn1 = document.createElement('button');
-    content.appendChild(btn1);
-    btn1.textContent = 'Cache';
-    btn1.className = 'btn btn-secondary';
-    let url = [`https://i.nhentai.net/galleries/${_gallery.media_id}/`,
-               `https://${localStorage['localhost']}/${_gallery.id}/`];
-    fetch(url[1]).then(r=>r.ok&&(btn1.textContent='Local')&&(url[0]=url[1]));
-    btn1.onclick = e => {
-      btn1.textContent='Reload';
-      btn1.onclick=e=>document.querySelectorAll('#image-container img').forEach(img=>img.src+='?');
-      document.head.insertAdjacentHTML('beforeend', `<style>
-        .alert{
-          display:none
-        }
-        #image-container img:first-of-type{
-          display:none;
-        }
-        </style>`);
-      let acr = document.querySelector("#image-container a");
-      let x = {
-        j: '.jpg',
-        p: '.png',
-        g: '.gif'
-      };
-      let p = document.createElement('progress');
-      p.max = window._gallery.num_pages;
+    const SEM = 30;
+    const get_num = ()=>location.pathname.match(/(\d+)\D*$/)[1];
+    const content = document.querySelector('nav');
+    const btn = content.appendChild(document.createElement('button'));
+    btn.textContent = 'Cache';
+    btn.className = 'btn btn-secondary';
+    window.url = `https://i.nhentai.net/galleries/${_gallery.media_id}/`;
+    const local = `https://${localStorage['localhost']}/${_gallery.id}/`;
+    fetch(local).then(r=>r.ok&&(btn.textContent='Local')&&(url=local));
+    btn.onclick = e => {
+      const acr = document.querySelector("#image-container a");
+      btn.textContent='Reload';
+      btn.onclick=e=>acr.querySelector('.rep-image').reload();
+      document.head.insertAdjacentHTML('beforeend', `<style>.alert{display:none} #image-container img:first-of-type{display:none;}</style>`);
+      const x = {j: '.jpg', p: '.png', g: '.gif'};
+      const p = document.createElement('progress');
+      p.max = _gallery.num_pages;
       content.appendChild(p);
-      window.repImg = window._gallery.images.pages.map((v, i) => {
-        let img = new Image();
-        img.addEventListener('load', e => p.value += 1);
-        let prop = {
-          width: v.w,
-          height: v.h,
-          src: url[0] + (1 + i) + x[v.t],
-          className: 'rep-image',
-          onerror: e => (e.target.src+='?')
+      class RepImage extends Image {
+        constructor(width, height, origin) {
+          super(width, height);
+          this.dataset.origin=origin;
+          this.className='rep-image';
         }
-        return Object.assign(img, prop);
-      });
+        load() {
+          this.src=this.dataset.origin;
+          return this;
+        }
+        reload() {
+          this.src+='?';
+          return this;
+        }
+      }
+      window.repImg = _gallery.images.pages.map((v, i)=>new RepImage(v.w, v.h, url+(1+i)+x[v.t]));
+      window.queue = repImg.slice(SEM).reverse();
+      for (const img of repImg) {
+        img.onload=e=>{p.value+=1;queue.length&&queue.pop().load()};
+        img.onerror=e=>setTimeout(img.reload, Math.random());
+      }
+      repImg.slice(0,SEM).forEach(img=>img.load());
       acr.appendChild(repImg[get_num()-1]);
-      let f = e => {
-        let num=get_num();
-        let oriImg = acr.querySelector('img:first-of-type');
-        let oldImg = acr.querySelector('.rep-image');
-        let newImg = repImg[num - 1];
-        console.log(newImg, oldImg);
+      new MutationObserver(e => {
+        const oriImg = acr.querySelector('img:first-of-type');
+        const oldImg = acr.querySelector('.rep-image');
+        const newImg = repImg[get_num() - 1];
         acr.replaceChild(newImg, oldImg);
         oriImg.removeAttribute('src');
-      }
-      let observer = new MutationObserver(f);
-      observer.observe(acr, {attributeFilter: ['href']});
+      }).observe(acr, {attributeFilter: ['href']});
     };
-    let localhost=document.createElement('input');
+    const localhost=document.createElement('input');
     localhost.type='text';
     localhost.placeholder='localhost';
     localhost.value=localStorage['localhost']||'';
