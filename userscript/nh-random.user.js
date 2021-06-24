@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random
 // @namespace    https://github.com/kou003/
-// @version      1.2
+// @version      1.2.1
 // @description  nh-random
 // @author       kou003
 // @match        *://nhentai.net/favorites/
@@ -20,7 +20,7 @@
     document.head.insertAdjacentHTML('beforeEnd', '<style>.random h1::after{content:"random"}.random .pagination,.random .count{display:none}</style>');
     const template = document.querySelector('#galleryFavoriteTemplate').content.firstElementChild;
     const favcontainer = document.querySelector('#favcontainer');
-    if (history.state != null && history.state.content) {
+    if (history.state && history.state.content) {
       document.body.classList.add('random');
       favcontainer.innerHTML = history.state.content;
     }
