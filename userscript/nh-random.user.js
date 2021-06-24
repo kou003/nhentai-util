@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random
 // @namespace    https://github.com/kou003/
-// @version      1.1
+// @version      1.2
 // @description  nh-random
 // @author       kou003
 // @match        *://nhentai.net/favorites/
@@ -13,7 +13,7 @@
 
 {
   'use strict';
-  const retry = url => new Promise(resolve => setTimeout(resolve(fetch(url), Math.random() * 2)));
+  const retry = url => new Promise(resolve => setTimeout(resolve(fetch(url), Math.random() * 100)));
   const fetch = url => window.fetch(url).then(r => r.ok ? r : retry(url));
   const main = () => {
     document.body.insertAdjacentHTML('beforeEnd', `<template id="galleryFavoriteTemplate"><div class="gallery-favorite"><button class="btn btn-primary btn-thin remove-button" type="button"><i class="fa fa-minus"></i>&nbsp;<span class="text">Remove</span></button><div class="gallery" ><a class="cover" style="padding:0 0 144.4% 0"><img loading="lazy"/><div class="caption"></div></a></div></div></template>`);
