@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.1
+// @version      3.2
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -22,7 +22,7 @@
     btn.className = 'btn btn-secondary';
     window.url = `https://i.nhentai.net/galleries/${_gallery.media_id}/`;
     const local = `https://${localStorage['localhost']}/${_gallery.id}/`;
-    fetch(local).then(r=>r.ok&&(btn.textContent='Local')&&(url=local));
+    fetch(local).then(r=>r.ok&&(btn.textContent='Local')&&(url=local)&&localStorage['autoload']&&btn.click());
     btn.onclick = e => {
       const acr = document.querySelector("#image-container a");
       btn.textContent='Reload';
@@ -69,6 +69,12 @@
     localhost.value=localStorage['localhost']||'';
     localhost.onchange=e=>localStorage['localhost']=localhost.value;
     document.querySelector('#content').appendChild(localhost);
+    const autoload=document.createElement('input');
+    autoload.type='checkbox';
+    autoload.placeholder='autoload';
+    autoload.checked=localStorage['autoload']||false;
+    autoload.onchange=e=>localStorage['autoload']=autoload.checked;
+    document.querySelector('#content').appendChild(autoload);
   }
   if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', main);
