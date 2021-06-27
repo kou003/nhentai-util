@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random
 // @namespace    https://github.com/kou003/
-// @version      1.2.1
+// @version      1.2.2
 // @description  nh-random
 // @author       kou003
 // @match        *://nhentai.net/favorites/
@@ -17,7 +17,8 @@
   const fetch = url => window.fetch(url).then(r => r.ok ? r : retry(url));
   const main = () => {
     document.body.insertAdjacentHTML('beforeEnd', `<template id="galleryFavoriteTemplate"><div class="gallery-favorite"><button class="btn btn-primary btn-thin remove-button" type="button"><i class="fa fa-minus"></i>&nbsp;<span class="text">Remove</span></button><div class="gallery" ><a class="cover" style="padding:0 0 144.4% 0"><img loading="lazy"/><div class="caption"></div></a></div></div></template>`);
-    document.head.insertAdjacentHTML('beforeEnd', '<style>.random h1::after{content:"random"}.random .pagination,.random .count{display:none}</style>');
+    document.querySelector('#content').insertAdjacentHTML('beforeend', '<button class="btn btn-primary" id="sub-random-button"><i class="fa fa-random fa-lg"></i></button><button class="btn btn-primary" id="page-top-button"><i class="fas fa-chevron-up"></i></button>');
+    document.head.insertAdjacentHTML('beforeEnd', '<style>html{scroll-behavior: smooth;}.random h1::after{content:"random"}.random .pagination,.random .count,#sub-random-button{display:none}.random #sub-random-button{display:inline}</style>');
     const template = document.querySelector('#galleryFavoriteTemplate').content.firstElementChild;
     const favcontainer = document.querySelector('#favcontainer');
     if (history.state && history.state.content) {
@@ -38,6 +39,8 @@
       return content;
     };
     const randomButton = document.querySelector('#favorites-random-button');
+    document.querySelector('#sub-random-button').onclick=e=>randomButton.click();
+    document.querySelector('#page-top-button').onclick=e=>scrollTo(0,0);
     const randomFavorite = e => {
       e.preventDefault();
       randomButton.onclick = e => e.preventDefault();
