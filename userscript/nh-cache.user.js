@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.2
+// @version      3.3
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -15,7 +15,7 @@
   'use strict';
   const main = async () => {
     const SEM = 30;
-    const get_num = ()=>location.pathname.match(/(\d+)\D*$/)[1];
+    const get_num = ()=>+location.pathname.match(/(\d+)\D*$/)[1];
     const content = document.querySelector('nav');
     const btn = content.appendChild(document.createElement('button'));
     btn.textContent = 'Cache';
@@ -39,7 +39,8 @@
           this.className='rep-image';
         }
         load() {
-          this.src=this.dataset.origin;
+          if (this.src != this.dataset.origin) 
+            this.src=this.dataset.origin;
           return this;
         }
         reload() {
@@ -48,6 +49,7 @@
         }
       }
       window.repImg = _gallery.images.pages.map((v, i)=>new RepImage(v.w, v.h, url+(1+i)+x[v.t]));
+      window.repImg = repImg.slice(get_num()-1).concat(repImg.slice(0,get_num()-1).reverse());
       window.queue = repImg.slice(SEM).reverse();
       for (const img of repImg) {
         img.onload=e=>{p.value+=1;queue.length&&queue.pop().load()};
