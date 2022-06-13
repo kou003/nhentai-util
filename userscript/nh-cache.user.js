@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.3
+// @version      3.3.1
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -49,13 +49,13 @@
         }
       }
       window.repImg = _gallery.images.pages.map((v, i)=>new RepImage(v.w, v.h, url+(1+i)+x[v.t]));
-      window.repImg = repImg.slice(get_num()-1).concat(repImg.slice(0,get_num()-1).reverse());
-      window.queue = repImg.slice(SEM).reverse();
+      window._repImg = repImg.slice(get_num()-1).concat(repImg.slice(0,get_num()-1).reverse());
+      window.queue = _repImg.slice(SEM).reverse();
       for (const img of repImg) {
         img.onload=e=>{p.value+=1;queue.length&&queue.pop().load()};
         img.onerror=e=>setTimeout(img.reload, Math.random() * 1000);
       }
-      repImg.slice(0,SEM).forEach(img=>img.load());
+      _repImg.slice(0,SEM).forEach(img=>img.load());
       acr.appendChild(repImg[get_num()-1]);
       new MutationObserver(e => {
         const oriImg = acr.querySelector('img:first-of-type');
