@@ -14,7 +14,26 @@
 {
   'use strict';
   const main = async () => {
-    const SEM = 30;
+    const localhost=document.createElement('input');
+    localhost.type='text';
+    localhost.placeholder='localhost';
+    localhost.value=localStorage['localhost']||'';
+    localhost.onchange=e=>localStorage['localhost']=localhost.value;
+    document.querySelector('#content').appendChild(localhost);
+    const autoload=document.createElement('input');
+    autoload.type='checkbox';
+    autoload.placeholder='autoload';
+    autoload.checked=+localStorage['autoload']||false;
+    autoload.onchange=e=>localStorage['autoload']=+autoload.checked;
+    document.querySelector('#content').appendChild(autoload);
+    const semaphore=document.createElement('input');
+    semaphore.type='number';
+    semaphore.min=1;
+    semaphore.value=max(1, localStorage['semaphore']||30);
+    semaphore.onchange=e=>localStorage['semaphore']=semaphore.value;
+    document.querySelector('#content').appendChild(semaphore);
+
+    const SEM = +semaphore.value;
     const get_num = ()=>+location.pathname.match(/(\d+)\D*$/)[1];
     const content = document.querySelector('nav');
     const btn = content.appendChild(document.createElement('button'));
@@ -22,7 +41,7 @@
     btn.className = 'btn btn-secondary';
     window.url = `https://i.nhentai.net/galleries/${_gallery.media_id}/`;
     const local = `https://${localStorage['localhost']}/${_gallery.id}/`;
-    fetch(local).then(r=>r.ok&&(btn.textContent='Local')&&(url=local)&&localStorage['autoload']&&btn.click());
+    fetch(local).then(r=>r.ok&&(btn.textContent='Local')&&(url=local)&&+localStorage['autoload']&&btn.click());
     btn.onclick = e => {
       const acr = document.querySelector("#image-container a");
       btn.textContent='Reload';
@@ -31,6 +50,7 @@
       const x = {j: '.jpg', p: '.png', g: '.gif'};
       const p = document.createElement('progress');
       p.max = _gallery.num_pages;
+      p.value = 0;
       content.appendChild(p);
       class RepImage extends Image {
         constructor(width, height, origin) {
@@ -65,18 +85,6 @@
         oriImg.removeAttribute('src');
       }).observe(acr, {attributeFilter: ['href']});
     };
-    const localhost=document.createElement('input');
-    localhost.type='text';
-    localhost.placeholder='localhost';
-    localhost.value=localStorage['localhost']||'';
-    localhost.onchange=e=>localStorage['localhost']=localhost.value;
-    document.querySelector('#content').appendChild(localhost);
-    const autoload=document.createElement('input');
-    autoload.type='checkbox';
-    autoload.placeholder='autoload';
-    autoload.checked=localStorage['autoload']||false;
-    autoload.onchange=e=>localStorage['autoload']=autoload.checked;
-    document.querySelector('#content').appendChild(autoload);
   }
   if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', main);
