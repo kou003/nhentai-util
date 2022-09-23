@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.3.1
+// @version      3.3.2
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -29,7 +29,7 @@
     const semaphore=document.createElement('input');
     semaphore.type='number';
     semaphore.min=1;
-    semaphore.value=max(1, localStorage['semaphore']||30);
+    semaphore.value=Math.max(1, localStorage['semaphore']||30);
     semaphore.onchange=e=>localStorage['semaphore']=semaphore.value;
     document.querySelector('#content').appendChild(semaphore);
 
