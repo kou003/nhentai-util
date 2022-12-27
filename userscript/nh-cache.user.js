@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.3.3
+// @version      3.3.4
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -85,11 +85,6 @@
         oriImg.removeAttribute('src');
       }).observe(acr, {attributeFilter: ['href']});
     };
-
-    // Address mysterious hyperlink bug 
-    document.querySelectorAll('#cover>a, a.tag').forEach(a => {
-      a.addEventListener('click', ({currentTarget: {href}}) => href && (location.href=href))
-    });
   }
   if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', main);
