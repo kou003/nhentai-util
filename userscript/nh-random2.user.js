@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random2
 // @namespace    https://github.com/kou003/
-// @version      0.1.0
+// @version      0.1.1
 // @description  nh-random2
 // @author       kou003
 // @match        *://nhentai.net/favorites/*
@@ -35,51 +35,62 @@
     const params = new URLSearchParams(location.search);
     const page = Math.max(+params.get('page') || 1, 1);
     const seed = +params.get('seed') || 0;
+    const q = params.get('q');
     const rand = new Random(seed);
     const randomButton = document.querySelector('#favorites-random-button');
-    if (seed) {
-      randomButton.href = '/favorites/?seed=' + Math.abs(rand.next()) % 1000;
-    } else {
-      randomButton.href = '/favorites/?seed=' + parseInt(Math.random() * 1000);
-      return;
-    }
+    const nextSeed = seed ? Math.abs(rand.next()) % 990 + 10 : parseInt(Math.random() * 990) + 10;
+    randomButton.href = `/favorites/?seed=${nextSeed}${q ? '&q=' + q : ''}`;
+    if (!seed) return;
 
     const observer = new IntersectionObserver((entries, observer) => {
-      for (const {target, isIntersecting} of entries) {
+      for (const { target, isIntersecting } of entries) {
         if (isIntersecting) {
-          target.src = target.dataset.src;
+          target.dispatchEvent(new Event('view'));
           observer.unobserve(target);
         }
       }
-    }, {rootMargin: "25% 0px 25% 0px"});
+    }, { rootMargin: "25% 0px 25% 0px" });
 
     document.body.insertAdjacentHTML('beforeEnd', `<template id="galleryFavoriteTemplate"><div class="gallery-favorite"><button class="btn btn-primary btn-thin remove-button" type="button"><i class="fa fa-minus"></i>&nbsp;<span class="text">Remove</span></button><div class="gallery" ><a class="cover" style="padding:0 0 144.4% 0"><img loading="lazy"/><div class="caption"></div></a></div></div></template>`);
+    /** @type {HTMLTemplateElement} */
     const template = document.querySelector('#galleryFavoriteTemplate');
     const favcontainer = document.querySelector('#favcontainer');
-    for (const div of favcontainer.querySelectorAll('.gallery-favorite'))
-      div.replaceWith(template.content.cloneNode(true));
 
-    const countEl = document.querySelector('h1 .count');
-    const favCount = +countEl.textContent.match(/\d+/)[0];
+    const h1 = document.querySelector('h1');
+    const countEl = h1.querySelector('.count');
+    const favCount = +(countEl ?? h1).textContent.match(/\d+/)[0] || 0;
     countEl.textContent += ` s${seed}`;
 
     const allidx = [...Array(favCount).keys()];
-    for (let i = favCount - 1; i > 0; --i) {
+    if (seed == 1) allidx.reverse();
+    else for (let i = favCount - 1; i > 0; --i) {
       const j = Math.abs(rand.next()) % (i + 1);
       [allidx[i], allidx[j]] = [allidx[j], allidx[i]];
     }
 
-    Promise.all(allidx.slice(25 * (page - 1), 25 * page).map(async (idx, i) => {
-      const spage = (idx / 25 | 0)+1;
-      const sidx = idx % 25;
-      const url = 'https://nhentai.net/favorites/?page=' + spage;
-      const shtml = sessionStorage[url] || (sessionStorage[url] = await fetch(url).then(res => res.text()));
-      const sdom = new DOMParser().parseFromString(shtml, 'text/html');
-      const content = sdom.querySelectorAll(`.gallery-favorite`)[sidx];
+    /** @param {Event} event  */
+    const loadContent = async event => {
+      const self = event.currentTarget;
+      const idx = +self.dataset.idx;
+      const page = 1 + (idx / 25 | 0);
+      const n = idx % 25;
+      const url = 'https://nhentai.net/favorites/?page=' + page + (q ? '&q=' + q : '');
+      const html = sessionStorage[url] || (sessionStorage[url] = await fetch(url).then(res => res.text()));
+      const dom = new DOMParser().parseFromString(html, 'text/html');
+      const content = dom.querySelectorAll(`.gallery-favorite`)[n];
       content.querySelector('noscript').remove();
       const img = content.querySelector('img');
-      observer.observe(img);
-      favcontainer.children[i].replaceWith(content);
+      img.src = img.dataset.src;
+      self.replaceWith(content);
+    }
+
+    const pageIdxs = allidx.slice(25 * (page - 1), 25 * page);
+    favcontainer.replaceChildren(...pageIdxs.map(idx => {
+      const content = template.content.firstElementChild.cloneNode(true);
+      content.dataset.idx = idx;
+      content.addEventListener('view', loadContent);
+      observer.observe(content);
+      return content;
     }));
   }
   if (document.readyState == 'loading') {
