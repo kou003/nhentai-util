@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random2
 // @namespace    https://github.com/kou003/
-// @version      0.1.1
+// @version      0.1.2
 // @description  nh-random2
 // @author       kou003
 // @match        *://nhentai.net/favorites/*
@@ -59,7 +59,7 @@
     const h1 = document.querySelector('h1');
     const countEl = h1.querySelector('.count');
     const favCount = +(countEl ?? h1).textContent.match(/\d+/)[0] || 0;
-    countEl.textContent += ` s${seed}`;
+    h1.insertAdjacentText('beforeend', ` s${seed}`);
 
     const allidx = [...Array(favCount).keys()];
     if (seed == 1) allidx.reverse();
