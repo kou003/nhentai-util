@@ -7,6 +7,7 @@
 // @match        *://nhentai.net/favorites/*
 // @updateURL    https://github.com/kou003/nhentai-util/raw/master/userscript/nh-random2.user.js
 // @downloadURL  https://github.com/kou003/nhentai-util/raw/master/userscript/nh-random2.user.js
+// @homepageURL  https://github.com/kou003/nhentai-util/
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
