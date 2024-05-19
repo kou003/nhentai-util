@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random2
 // @namespace    https://github.com/kou003/
-// @version      0.2.0
+// @version      0.2.1
 // @description  nh-random2
 // @author       kou003
 // @match        *://nhentai.net/favorites/*
@@ -66,7 +66,8 @@
     if (seed == 1) {
       allidx = allidx.reverse();
     } else {
-      allidx = allidx.reverse().map(i => [rand.next(), i]).sort(([a], [b]) => a - b).map(i => favCount - i - 1);
+      const weight = allidx.reverse().map(i => rand.next());
+      allidx = allidx.sort((a, b) => weight[a] - weight[b]);
     }
 
     /** @param {Event} event  */
