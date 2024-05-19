@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random2
 // @namespace    https://github.com/kou003/
-// @version      0.1.2
+// @version      0.2.0
 // @description  nh-random2
 // @author       kou003
 // @match        *://nhentai.net/favorites/*
@@ -58,14 +58,14 @@
 
     const h1 = document.querySelector('h1');
     const countEl = h1.querySelector('.count');
-    const favCount = +(countEl ?? h1).textContent.match(/\d+/)[0] || 0;
+    const favCount = +(countEl ?? h1).textContent.match(/[\d,]+/)[0].replace(',', '') || 0;
     h1.insertAdjacentText('beforeend', ` s${seed}`);
 
-    const allidx = [...Array(favCount).keys()];
-    if (seed == 1) allidx.reverse();
-    else for (let i = favCount - 1; i > 0; --i) {
-      const j = Math.abs(rand.next()) % (i + 1);
-      [allidx[i], allidx[j]] = [allidx[j], allidx[i]];
+    let allidx = [...Array(favCount).keys()];
+    if (seed == 1) {
+      allidx = allidx.reverse();
+    } else {
+      allidx = allidx.reverse().map(i => [rand.next(), i]).sort(([a], [b]) => a - b).map(i => favCount - i - 1);
     }
 
     /** @param {Event} event  */
@@ -85,6 +85,7 @@
     }
 
     const pageIdxs = allidx.slice(25 * (page - 1), 25 * page);
+    console.log(pageIdxs);
     favcontainer.replaceChildren(...pageIdxs.map(idx => {
       const content = template.content.firstElementChild.cloneNode(true);
       content.dataset.idx = idx;
