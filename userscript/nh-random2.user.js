@@ -89,11 +89,12 @@
     const pageIdxs = allidx.slice(25 * (page - 1), 25 * page);
     console.log(pageIdxs);
     favcontainer.replaceChildren(...pageIdxs.map(idx => {
-      const content = template.content.firstElementChild.cloneNode(true);
+      const clone = template.content.cloneNode(true);
+      const content = clone.querySelector('.gallery-favorite');
       content.dataset.idx = idx;
       content.addEventListener('view', loadContent);
       observer.observe(content);
-      return content;
+      return clone;
     }));
   }
   if (document.readyState == 'loading') {
