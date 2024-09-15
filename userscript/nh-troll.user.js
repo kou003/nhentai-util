@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-troll
 // @namespace    https://github.com/kou003/
-// @version      1.0.1
+// @version      1.0.2
 // @description  nh-troll
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -19,7 +19,7 @@
     if (img.tagName != 'IMG') return;
     const m = img.src.match(/^https:\/\/t(\d+).nhentai.net/);
     if (m) {
-      img.dataset.tlist ??= '2 3 5 7';
+      img.dataset.tlist ??= '7 5 3 2';
       const tlist = img.dataset.tlist?.split(' ').filter(t => t != m[1]);
       if (tlist.length == 0) return;
       img.src = img.src.replace(`t${m[1]}.nhentai.net`, `t${tlist.pop()}.nhentai.net`);
