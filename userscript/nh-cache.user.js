@@ -41,7 +41,16 @@
     btn.className = 'btn btn-secondary';
     window.url = `https://i.nhentai.net/galleries/${_gallery.media_id}/`;
     const local = `https://${localStorage['localhost']}/${_gallery.id}/`;
-    fetch(local).then(r=>r.ok&&(btn.textContent='Local')&&(url=local)&&+localStorage['autoload']&&btn.click());
+    
+    fetch(local).then(r => {
+      console.log('local fetch:', r.ok);
+      if (r.ok) {
+        btn.textContent='Local';
+        url=local;
+        if (+localStorage['autoload']) btn.click();
+      }
+    });
+    
     btn.onclick = e => {
       const acr = document.querySelector("#image-container a");
       btn.textContent='Reload';

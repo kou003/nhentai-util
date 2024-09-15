@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random2
 // @namespace    https://github.com/kou003/
-// @version      0.2.2
+// @version      0.2.3
 // @description  nh-random2
 // @author       kou003
 // @match        *://nhentai.net/favorites/*
@@ -81,6 +81,7 @@
       const dom = new DOMParser().parseFromString(html, 'text/html');
       const content = dom.querySelectorAll(`.gallery-favorite`)[n];
       content.querySelector('noscript').remove();
+      content.dataset.idx = idx;
       const img = content.querySelector('img');
       img.src = img.dataset.src;
       self.replaceWith(content);
