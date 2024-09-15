@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.4.0
+// @version      3.4.1
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -106,7 +106,7 @@
 
       // page-slider
       const slider = document.createElement('input');
-      slider.class = 'page-slider';
+      slider.className = 'page-slider';
       slider.type = 'range';
       slider.min = 1;
       slider.max = _gallery.num_pages;
