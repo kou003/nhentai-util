@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random2
 // @namespace    https://github.com/kou003/
-// @version      0.2.1
+// @version      0.2.2
 // @description  nh-random2
 // @author       kou003
 // @match        *://nhentai.net/favorites/*

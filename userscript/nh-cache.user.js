@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.3.4
+// @version      3.3.5
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -73,7 +73,10 @@
       window.queue = _repImg.slice(SEM).reverse();
       for (const img of repImg) {
         img.onload=e=>{p.value+=1;queue.length&&queue.pop().load()};
-        img.onerror=e=>setTimeout(img.reload, Math.random() * 1000);
+        img.onerror=e=>{
+          console.error(e);
+          setTimeout(img.reload, 500);
+        }
       }
       _repImg.slice(0,SEM).forEach(img=>img.load());
       acr.appendChild(repImg[get_num()-1]);
