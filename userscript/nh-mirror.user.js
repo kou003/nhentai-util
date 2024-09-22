@@ -16,14 +16,14 @@
 
   const updateTurningBehavior = () => {
     const reader = JSON.parse(localStorage['reader'] || '{}');
-    document.documentElement.classList.toggle('turning-left', reader?.turning_behavior === 'left');
+    document.documentElement.classList.toggle('inverted', reader?.turning_behavior === 'left');
   };
 
   const main = async () => {
     updateTurningBehavior();
 
     document.head.insertAdjacentHTML('beforeend', `<style>
-      html.reader.turning-left {
+      html.reader.inverted {
         .reader-bar .reader-pagination {
           flex-direction: row-reverse;
         }
