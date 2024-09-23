@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-swipe-pagination
 // @namespace    https://github.com/kou003/
-// @version      1.1.1
+// @version      1.1.2
 // @description  nh-swipe-pagination
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -40,7 +40,7 @@
       const dt = event.timeStamp - st;
       sx = sy = st = null;
       if (Math.abs(dx) < H_THR || Math.abs(dy) > V_THR || dt > TIMEOUT) return;
-      const isInverted = document.documentElement.classList.contains('inverted');
+      const isInverted = !!document.querySelector('html.reader.inverted');
       if ((dx < 0) ^ isInverted) {
         document.querySelector(':is(.pagination,.reader-bar) .next')?.click();
       } else {

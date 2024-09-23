@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-mirror
 // @namespace    https://github.com/kou003/
-// @version      1.0.0
+// @version      1.0.1
 // @description  nh-mirror
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
