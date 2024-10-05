@@ -40,7 +40,8 @@
     const btn = nav.appendChild(document.createElement('button'));
     btn.textContent = 'Cache';
     btn.className = 'btn btn-secondary';
-    let url = `https://i.nhentai.net/galleries/${_gallery.media_id}/`;
+    const imgOrigin = new URL(document.querySelector('#image-container a img').src).origin;
+    let url = `${imgOrigin}/galleries/${_gallery.media_id}/`;
     const local = `https://${localStorage['localhost']}/${_gallery.id}/`;
     
     fetch(local).then(r => {
