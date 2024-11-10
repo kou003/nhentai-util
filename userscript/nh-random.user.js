@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random
 // @namespace    https://github.com/kou003/
-// @version      1.2.2
+// @version      1.2.3
 // @description  nh-random
 // @author       kou003
 // @match        *://nhentai.net/favorites/
@@ -34,7 +34,7 @@
       a.href = '/g/' + data.id + '/';
       img.width = data.images.thumbnail.w;
       img.height = data.images.thumbnail.h;
-      img.src = 'https://t.nhentai.net/galleries/' + data.media_id + '/thumb' + {j:'.jpg',p:'.png',g:'.gif'}[data.images.thumbnail.t];
+      img.src = 'https://t.nhentai.net/galleries/' + data.media_id + '/thumb' + {j:'.jpg',p:'.png',g:'.gif',w:'.webp'}[data.images.thumbnail.t];
       caption.textContent = data.title.japanese || data.title.english;
       return content;
     };

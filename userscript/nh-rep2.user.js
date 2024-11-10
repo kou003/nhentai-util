@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-rep2
 // @namespace    https://github.com/kou003/
-// @version      1.3
+// @version      1.4
 // @description  nh-rep2
 // @author       kou003
 // @match        *://nhentai.net/g/*/*
@@ -40,7 +40,7 @@
         </style>`);
         let c=document.querySelector("#image-container");
         let t=c.querySelector("a");
-        let x={j: '.jpg', p: '.png', g: '.gif'};
+        let x={j: '.jpg', p: '.png', g: '.gif', w: '.webp'};
         let p=document.createElement('progress');
         p.max=window._gallery.num_pages;
         document.querySelector('nav').append(p);

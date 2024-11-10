@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.4.1
+// @version      3.4.2
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -72,7 +72,7 @@
           margin: 0 auto;
         }
         </style>`);
-      const x = {j: '.jpg', p: '.png', g: '.gif'};
+      const x = {j: '.jpg', p: '.png', g: '.gif', w: '.webp'};
       const p = document.createElement('progress');
       p.max = _gallery.num_pages;
       p.value = 0;
