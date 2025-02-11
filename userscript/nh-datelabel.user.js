@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-datelabel
 // @namespace    https://github.com/kou003/
-// @version      1.0.0
+// @version      1.0.1
 // @description  nh-datelabel
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -17,7 +17,7 @@
   const main = async () => {
     document.head.insertAdjacentHTML('beforeend', `<style>
       a.cover:before {
-          content: attr(href);
+          content: attr(data-date);
           display: inline-block;
           position: absolute;
           z-index: 10000;
