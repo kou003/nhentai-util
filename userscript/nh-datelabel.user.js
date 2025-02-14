@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-datelabel
 // @namespace    https://github.com/kou003/
-// @version      1.0.2
+// @version      1.0.3
 // @description  nh-datelabel
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -23,7 +23,7 @@
           z-index: 10000;
           left: 0;
           top: 0;
-          background-color: rgba(0,0,0,0.2);
+          background-color: rgba(0,0,0,0.4);
       }
     </style>`);
     const gals = [...document.querySelectorAll('.gallery a[href^="/g/"]')];
