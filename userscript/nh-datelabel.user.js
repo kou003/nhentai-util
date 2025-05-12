@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-datelabel
 // @namespace    https://github.com/kou003/
-// @version      1.1.0
+// @version      1.1.1
 // @description  nh-datelabel
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -31,7 +31,7 @@
       const gid = a.href.match(/\/g\/(\d+)\//)[1];
       const {upload_date,num_pages} = await fetch(`https://nhentai.net/api/gallery/${gid}`).then(r => r.json());
       const date = new Date(upload_date*1000).toLocaleDateString();
-      a.dataset.label = `${date ?? ''} [${num_pages]`;
+      a.dataset.label = `${date ?? ''} [${num_pages}]`;
     }));
   }
   if (document.readyState === 'loading') {
