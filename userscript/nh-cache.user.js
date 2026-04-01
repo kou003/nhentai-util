@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-cache
 // @namespace    https://github.com/kou003/
-// @version      3.4.2
+// @version      3.5.0
 // @description  nh-cache
 // @author       kou003
 // @match        *://nhentai.net/g/*/*/
@@ -14,19 +14,11 @@
 {
   'use strict';
   const main = async () => {
-    const localhost=document.createElement('input');
-    localhost.type='text';
-    localhost.placeholder='localhost';
-    localhost.value=localStorage['localhost']||'';
-    localhost.onchange=e=>localStorage['localhost']=localhost.value;
+    const gid = location.pathname.match(/\/g\/(\d+)/)[1];
+    const _gallery = await fetch(`https://nhentai.net/api/v2/galleries/${gid}`).then(r => r.json());
+    window._gallery = _gallery;
+
     const content = document.querySelector('#content');
-    content.appendChild(localhost);
-    const autoload=document.createElement('input');
-    autoload.type='checkbox';
-    autoload.placeholder='autoload';
-    autoload.checked=+localStorage['autoload']||false;
-    autoload.onchange=e=>localStorage['autoload']=+autoload.checked;
-    content.appendChild(autoload);
     const semaphore=document.createElement('input');
     semaphore.type='number';
     semaphore.min=1;
@@ -40,19 +32,8 @@
     const btn = nav.appendChild(document.createElement('button'));
     btn.textContent = 'Cache';
     btn.className = 'btn btn-secondary';
-    // const imgOrigin = new URL(document.querySelector('#image-container a img').src).origin;
-    const imgOrigin = 'https://i.nhentai.net';
-    let url = `${imgOrigin}/galleries/${_gallery.media_id}/`;
-    const local = `https://${localStorage['localhost']}/${_gallery.id}/`;
-    
-    fetch(local).then(r => {
-      console.log('local fetch:', r.ok);
-      if (r.ok) {
-        btn.textContent='Local';
-        url = local;
-        if (+localStorage['autoload']) btn.click();
-      }
-    }).catch(e => 0);
+    const imgOrigin = new URL(document.querySelector('#image-container a img').src).origin + '/';
+    // const imgOrigin = 'https://i.nhentai.net/';
     
     btn.onclick = e => {
       const acr = document.querySelector("#image-container a");
@@ -93,7 +74,7 @@
           return this;
         }
       }
-      window.repImg = _gallery.images.pages.map((v, i)=>new RepImage(v.w, v.h, url+(1+i)+x[v.t]));
+      window.repImg = _gallery.pages.map(p => new RepImage(p.width, p.height, imgOrigin+p.path));
       window._repImg = repImg.slice(get_num()-1).concat(repImg.slice(0,get_num()-1).reverse());
       window.queue = _repImg.slice(SEM).reverse();
       for (const img of repImg) {
@@ -116,8 +97,12 @@
       content.appendChild(slider);
       slider.addEventListener('input', e => {
         const next = document.querySelector('a.next');
-        next.href = `/g/${_gallery.id}/${+slider.value}/`;
-        next.click();
+        const prev = document.querySelector('a.previous');
+        const current = get_num();
+        const value = +slider.value;
+        const diff = value - current;
+        if (diff > 0) for (let i = 0; i < diff; i++) next?.click();
+        if (diff < 0) for (let i = 0; i < -diff; i++) prev?.click();
       });
 
       new MutationObserver(e => {

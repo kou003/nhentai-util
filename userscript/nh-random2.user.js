@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-random2
 // @namespace    https://github.com/kou003/
-// @version      0.2.3
+// @version      0.3.0
 // @description  nh-random2
 // @author       kou003
 // @match        *://nhentai.net/favorites/*
@@ -29,19 +29,22 @@
       return this.w = (this.w ^ (this.w >>> 19)) ^ (t ^ (t >>> 8));
     }
   }
-
-  const retry = url => new Promise(resolve => setTimeout(resolve(fetch(url), Math.random() * 100)));
-  const fetch = url => window.fetch(url).then(r => r.ok ? r : retry(url));
   const main = () => {
+    const accessToken = document.cookie.split(';').find(c=>c.startsWith('access_token=')).replace('access_token=', '')
     const params = new URLSearchParams(location.search);
     const page = Math.max(+params.get('page') || 1, 1);
     const seed = +params.get('seed') || 0;
-    const q = params.get('q');
+    const q = params.get('q') || '';
     const rand = new Random(seed);
     const randomButton = document.querySelector('#favorites-random-button');
     const nextSeed = seed ? Math.abs(rand.next()) % 990 + 10 : parseInt(Math.random() * 990) + 10;
     randomButton.href = `/favorites/?seed=${nextSeed}${q ? '&q=' + q : ''}`;
     if (!seed) return;
+
+    for (const a of document.querySelectorAll('a[href^="/user/favorites/?page="]')) {
+      a.href = a.href + `&seed=${seed}`;
+      a.onclick = () => location.href = a.href;
+    }
 
     const observer = new IntersectionObserver((entries, observer) => {
       for (const { target, isIntersecting } of entries) {
@@ -52,7 +55,7 @@
       }
     }, { rootMargin: "25% 0px 25% 0px" });
 
-    document.body.insertAdjacentHTML('beforeEnd', `<template id="galleryFavoriteTemplate"><div class="gallery-favorite"><button class="btn btn-primary btn-thin remove-button" type="button"><i class="fa fa-minus"></i>&nbsp;<span class="text">Remove</span></button><div class="gallery" ><a class="cover" style="padding:0 0 144.4% 0"><img loading="lazy"/><div class="caption"></div></a></div></div></template>`);
+    document.body.insertAdjacentHTML('beforeEnd', `<template id="galleryFavoriteTemplate"><div class="gallery-favorite"><div class="gallery" ><a class="cover" style="padding:0 0 144.4% 0"><img loading="lazy"/><div class="caption"></div></a></div></div></template>`);
     /** @type {HTMLTemplateElement} */
     const template = document.querySelector('#galleryFavoriteTemplate');
     const favcontainer = document.querySelector('#favcontainer');
@@ -70,21 +73,26 @@
       allidx = allidx.sort((a, b) => weight[a] - weight[b]);
     }
 
+    const imgOrigin = new URL(document.querySelector('.gallery-favorite a.cover img').src).origin + '/';
+
     /** @param {Event} event  */
     const loadContent = async event => {
       const self = event.currentTarget;
       const idx = +self.dataset.idx;
       const page = 1 + (idx / 25 | 0);
       const n = idx % 25;
-      const url = 'https://nhentai.net/favorites/?page=' + page + (q ? '&q=' + q : '');
-      const html = sessionStorage[url] || (sessionStorage[url] = await fetch(url).then(res => res.text()));
-      const dom = new DOMParser().parseFromString(html, 'text/html');
-      const content = dom.querySelectorAll(`.gallery-favorite`)[n];
-      content.querySelector('noscript').remove();
-      content.dataset.idx = idx;
-      const img = content.querySelector('img');
-      img.src = img.dataset.src;
-      self.replaceWith(content);
+      const url = `https://nhentai.net/api/v2/favorites?page=${page}&q=${q}`;
+      const data = await fetch(url, {
+        headers: {
+          'authorization': `User ${accessToken}`
+        },
+        credentials: 'include'
+      }).then(r => r.json());
+      const cur = data.result[n];
+      const img = self.querySelector('img');
+      img.src = imgOrigin + cur.thumbnail;
+      const caption = self.querySelector('.caption');
+      caption.textContent = cur.japanese_title || cur.english_title;
     }
 
     const pageIdxs = allidx.slice(25 * (page - 1), 25 * page);
