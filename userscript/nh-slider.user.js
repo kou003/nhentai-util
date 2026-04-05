@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-slider
 // @namespace    https://github.com/kou003/
-// @version      2.0.0
+// @version      2.0.1
 // @description  nh-slider
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -15,6 +15,7 @@
   'use strict';
   const getCurrentPage = ()=>+document.querySelector('.current').textContent;
   const getPageNum = ()=>+document.querySelector('.num-pages').textContent;
+  let isPagingNow = false;
   const injectSlider = () => {
     if (document.querySelector('.page-slider')) return;
     const slider = document.createElement('input');
@@ -30,9 +31,18 @@
       const current = getCurrentPage();
       const value = +slider.value;
       const diff = value - current;
-      if (diff > 0) for (let i = 0; i < diff; i++) next?.click();
-      if (diff < 0) for (let i = 0; i < -diff; i++) prev?.click();
+      try {
+        isPagingNow = true;
+        if (diff > 0) for (let i = 0; i < diff; i++) next?.click();
+        if (diff < 0) for (let i = 0; i < -diff; i++) prev?.click();
+      } finally {
+        isPagingNow = false;
+      }
     });
+    new MutationObserver(() => {
+      if (isPagingNow) return;
+      slider.value = getCurrentPage();
+    }).observe(document, { childList: true, subtree: true });
   };
 
   const main = async () => {
