@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-swipe-pagination
 // @namespace    https://github.com/kou003/
-// @version      1.1.2
+// @version      2.0.0
 // @description  nh-swipe-pagination
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -48,15 +48,8 @@
       }
     }
 
-    if (document.querySelector('.pagination,.reader-bar')) {
-      document.body.addEventListener('touchstart', touchstart);
-      document.body.addEventListener('touchend', touchend);
-    }
+    window.addEventListener('touchstart', touchstart);
+    window.addEventListener('touchend', touchend);
   }
-
-  if (document.readyState == 'loading') {
-    document.addEventListener('DOMContentLoaded', main);
-  } else {
-    main();
-  }
+  main();
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-slider
 // @namespace    https://github.com/kou003/
-// @version      1.0.0
+// @version      2.0.0
 // @description  nh-slider
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -60,7 +60,7 @@
   }
 
   if (document.readyState == 'loading') {
-    document.addEventListener('DOMContentLoaded', main);
+    document.addEventListener('DOMContentLoaded', main, { once: true });
   } else {
     main();
   }
