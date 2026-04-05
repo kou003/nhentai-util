@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         nh-mirror
 // @namespace    https://github.com/kou003/
-// @version      1.0.1
+// @version      1.1.0
 // @description  nh-mirror
 // @author       kou003
-// @match        *://nhentai.net/g/*/*/
+// @match        *://nhentai.net/*
 // @updateURL    https://github.com/kou003/nhentai-util/raw/master/userscript/nh-mirror.user.js
 // @downloadURL  https://github.com/kou003/nhentai-util/raw/master/userscript/nh-mirror.user.js
 // @grant        none
@@ -35,7 +35,7 @@
     </style>`);
 
     new MutationObserver(updateTurningBehavior)
-      .observe(document.querySelector('#image-container'), {attributeFilter: ['class']});
+      .observe(document, {childList: true, subtree: true});
   }
 
   if (document.readyState === 'loading') {

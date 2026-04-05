@@ -1,1 +1,0 @@
-javascript:[_,a,b]=location.pathname.match(/\/(.*)\/(.*)\//);location.href=`/search/?q=${a}%3A"${b.replaceAll('-', '+')}"`
