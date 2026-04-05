@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nh-query-update
 // @namespace    https://github.com/kou003/
-// @version      1.0.0
+// @version      2.0.0
 // @description  nh-query-update
 // @author       kou003
 // @match        *://nhentai.net/*
@@ -14,13 +14,14 @@
 {
   'use strict';
   const update = () => {
-    if (!/^\/search\//.test(location.pathname)) return;
-    const queryInput = document.querySelector('#content>.sort>.sort-type:first-child input');
-    if (!queryInput) return;
+    if (location.pathname !== '/search') return;
+    const q = new URLSearchParams(location.search).get('q');
+    const input = document.querySelector('input[type="search"]');
+    if (q && input && input.value !== q) input.value = q;
   }
   const main = () => {
     const title = document.head.querySelector('title');
-    new MutationObserver(update).observe(title, { childList: true });
+    new MutationObserver(update).observe(document, { childList: true, subtree: true });
     update();
   }
   if (document.readyState == 'loading') {
